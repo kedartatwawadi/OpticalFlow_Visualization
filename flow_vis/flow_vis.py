@@ -103,7 +103,7 @@ def flow_uv_to_colors(u, v, convert_to_bgr=False):
     return flow_image
 
 
-def flow_to_color(flow_uv, clip_flow=None, convert_to_bgr=False):
+def flow_to_color(flow_uv, clip_flow=None, convert_to_bgr=False, flow_norm=None):
     """
     Expects a two dimensional flow image of shape.
 
@@ -111,6 +111,7 @@ def flow_to_color(flow_uv, clip_flow=None, convert_to_bgr=False):
         flow_uv (np.ndarray): Flow UV image of shape [H,W,2]
         clip_flow (float, optional): Clip maximum of flow values. Defaults to None.
         convert_to_bgr (bool, optional): Convert output image to BGR. Defaults to False.
+	flow_norm (float, optional): Use the value to normalize the flows. If None, the max flow value is used
 
     Returns:
         np.ndarray: Flow visualization image of shape [H,W,3]
@@ -121,9 +122,15 @@ def flow_to_color(flow_uv, clip_flow=None, convert_to_bgr=False):
         flow_uv = np.clip(flow_uv, 0, clip_flow)
     u = flow_uv[:,:,0]
     v = flow_uv[:,:,1]
-    rad = np.sqrt(np.square(u) + np.square(v))
-    rad_max = np.max(rad)
-    epsilon = 1e-5
-    u = u / (rad_max + epsilon)
-    v = v / (rad_max + epsilon)
+    
+    if flow_norm is not None:
+        assert flow_norm > 0
+    else:
+        rad = np.sqrt(np.square(u) + np.square(v))
+        rad_max = np.max(rad)
+        epsilon = 1e-5
+        flow_norm = rad_max + epsilon
+
+    u = u / flow_norm
+    v = v / flow_norm
     return flow_uv_to_colors(u, v, convert_to_bgr)
