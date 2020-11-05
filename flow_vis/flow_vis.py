@@ -111,7 +111,7 @@ def flow_to_color(flow_uv, clip_flow=None, convert_to_bgr=False, flow_norm=None)
         flow_uv (np.ndarray): Flow UV image of shape [H,W,2]
         clip_flow (float, optional): Clip maximum of flow values. Defaults to None.
         convert_to_bgr (bool, optional): Convert output image to BGR. Defaults to False.
-	flow_norm (float, optional): Use the value to normalize the flows. If None, the max flow value is used
+        flow_norm (float, optional): Use the value to normalize the flows. If None, the max flow value is used
 
     Returns:
         np.ndarray: Flow visualization image of shape [H,W,3]
